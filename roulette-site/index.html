@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>マスコット入れ替えルーレット！</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #f3f4f8, #e7ebf3);
+      margin: 0;
+      padding: 50px 20px;
+      color: #333;
+    }
+
+    h1 {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .controls {
+      margin-bottom: 25px;
+    }
+
+    select, button {
+      font-size: 1em;
+      padding: 10px 16px;
+      margin: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: #f0f0ff;
+      border-color: #999;
+    }
+
+    #result-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 40px 20px;
+      display: inline-block;
+      min-width: 300px;
+      margin-top: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    #result-card.show {
+      transform: scale(1.05);
+    }
+
+    #result {
+      font-size: 1.3em;
+      color: #555;
+    }
+
+    .char {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #222;
+      margin: 0 6px;
+    }
+
+    .bold-part {
+      font-weight: 700;
+      color: #333;
+    }
+
+    #history {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #666;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6em;
+    }
+
+    @media (max-width: 600px) {
+      #result-card {
+        width: 90%;
+        padding: 30px 10px;
+      }
+      .char {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>マスコット入れ替えルーレット！</h1>
+
+  <div class="controls">
+    <label>入れ替えるもの：</label>
+    <select id="mode">
+      <option value="髪型">髪型</option>
+      <option value="服装">服装</option>
+    </select>
+    <button id="roll">ルーレット開始</button>
+    <button id="reset">リセット</button>
+  </div>
+
+  <div id="result-card">
+    <div id="result">結果がここに表示されます</div>
+  </div>
+
+  <div id="history"></div>
+
+  <script>
+    const characters = [
+      "ミキ","にころ","須磨都","いおり","とこ","みやっこ","和猫","寿昏","結田あずき",
+      "ミタマ","紫羽","桜","おはな","かう","にしき","うゆう","ロロ","天ノ玲","ほのり",
+      "狐紺","宇迦","しから","弥寿","からす丸","祭京しずき","九条清隆","粗目霧利",
+      "ミミ","そよ","子招","ちゃちゃ","玄幽","虎珀","千夏","瀬織りつ","恋鞠","鞍祭天弧",
+      "ララ","焔離","夜鳥廻狸","漬子","櫻井ニコ","招","うりん","いつき","七星おりこ"
+    ];
+
+    const usedPairs = new Set();
+    const resultDiv = document.getElementById("result");
+    const historyDiv = document.getElementById("history");
+    const resultCard = document.getElementById("result-card");
+
+    function getRandomCharacter(exclude) {
+      const available = characters.filter(c => c !== exclude);
+      return available[Math.floor(Math.random() * available.length)];
+    }
+
+    function roll() {
+      const mode = document.getElementById("mode").value;
+      if (usedPairs.size >= characters.length * (characters.length - 1)) {
+        resultDiv.textContent = "もう全ての組み合わせが出ました。リセットしてください。";
+        return;
+      }
+
+      let a, b, key;
+      do {
+        a = characters[Math.floor(Math.random() * characters.length)];
+        b = getRandomCharacter(a);
+        key = `${a}-${b}-${mode}`;
+      } while (usedPairs.has(key));
+
+      usedPairs.add(key);
+
+      // 結果をHTMLで太字化
+      resultDiv.innerHTML = `
+        <span class="char">${a}</span>
+        <span class="bold-part">の${mode}が</span>
+        <span class="char">${b}</span>
+        <span class="bold-part">になる</span>
+      `;
+
+      resultCard.classList.remove("show");
+      void resultCard.offsetWidth; // アニメーションリセット
+      resultCard.classList.add("show");
+
+      const history = Array.from(usedPairs).map(p => {
+        const [x, y, m] = p.split("-");
+        return `${x}の${m}が${y}になる`;
+      });
+      historyDiv.textContent = "履歴：" + history.join(" ／ ");
+    }
+
+    function reset() {
+      usedPairs.clear();
+      resultDiv.textContent = "結果がここに表示されます";
+      historyDiv.textContent = "";
+    }
+
+    document.getElementById("roll").addEventListener("click", roll);
+    document.getElementById("reset").addEventListener("click", reset);
+  </script>
+
+</body>
+</html>
