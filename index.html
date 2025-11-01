@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>マスコット入れ替えルーレット！</title>
+
+  <!-- ▼ OGP（SNSプレビュー設定） ▼ -->
+  <meta property="og:title" content="マスコット入れ替えルーレット！">
+  <meta property="og:description" content="マスコットの髪型や服装を入れ替えるランダムルーレット！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mascot-roulette-site.vercel.app/">
+  <meta property="og:image" content="https://mascot-roulette-site.vercel.app/preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="マスコット入れ替えルーレット！">
+  <meta name="twitter:description" content="マスコットの髪型や服装を入れ替えるランダムルーレット！">
+  <meta name="twitter:image" content="https://mascot-roulette-site.vercel.app/preview.png">
+  <!-- ▲ OGP設定ここまで ▲ -->
+
   <style>
     body {
       font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
@@ -147,7 +160,7 @@
 
       usedPairs.add(key);
 
-      // 結果をHTMLで太字化
+      // 結果表示
       resultDiv.innerHTML = `
         <span class="char">${a}</span>
         <span class="bold-part">の${mode}が</span>
